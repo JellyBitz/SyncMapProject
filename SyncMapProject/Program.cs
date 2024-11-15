@@ -16,7 +16,7 @@ namespace SyncMapProject
             Console.WriteLine(Console.Title + Environment.NewLine);
 
             // Load settings
-            Settings settings = LoadOrCreateFile("Settings.json");
+            Settings settings = LoadOrCreateFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.json"));
 
             // Abort if there is no path given
             if (args.Length == 0)
