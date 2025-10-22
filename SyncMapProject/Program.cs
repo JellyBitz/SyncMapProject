@@ -54,7 +54,7 @@ namespace SyncMapProject
             try
             {
                 // Check if table used to synchronize this app exists
-                var results = sql.ExecuteQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'mapinfo' AND  TABLE_NAME = 'mapinfo';");
+                var results = sql.ExecuteQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND  TABLE_NAME = 'mapinfo';");
                 if (results.Count == 0)
                 {
                     // Doesn't exist, create table
@@ -75,7 +75,7 @@ namespace SyncMapProject
                     // Get region ids at worldmap from database
                     results = sql.ExecuteQuery("SELECT Service, RegionID FROM mapinfo WHERE Service = 1 AND RegionID >= 0");
 
-                    if (results.Count == 0)
+                    if (results.Count > 0)
                     {
                         // Disable all of them
                         for (int i = 0; i < mapInfo.EnabledRegions.Count; i++)
@@ -84,7 +84,7 @@ namespace SyncMapProject
                         // Enable just the one found in database
                         foreach (var result in results)
                         {
-                            short regionId = short.Parse(result[0]);
+                            short regionId = short.Parse(result[1]);
                             mapInfo.SetRegion(regionId, true);
                         }
 
