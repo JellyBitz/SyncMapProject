@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace SyncMapProject
 {
@@ -52,24 +53,47 @@ namespace SyncMapProject
             // Try to connect
             try
             {
-                // Get region ids at worldmap from database
-                var results = sql.GetTableResult("SELECT wRegionID FROM _RefRegion WHERE wRegionID >= 0");
-
-                // Disable all of them
-                for (int i = 0; i < mapInfo.RegionData.Count; i++)
-                    mapInfo.RegionData[i] = false;
-
-                // Enable just the one found in database
-                foreach (var result in results)
+                // Check if table used to synchronize this app exists
+                var results = sql.ExecuteQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'mapinfo' AND  TABLE_NAME = 'mapinfo';");
+                if (results.Count == 0)
                 {
-                    short regionId = short.Parse(result[0]);
-                    mapInfo.SetRegion(regionId, true);
-                }
+                    // Doesn't exist, create table
+                    sql.ExecuteQuery("CREATE TABLE mapinfo ( Service INT, RegionID SMALLINT PRIMARY KEY);");
 
-                // Save it
-                File.Delete(filePath+".bak");
-                File.Move(filePath, filePath + ".bak");
-                mapInfo.Save(filePath);
+                    for (int regionId = 0; regionId < mapInfo.EnabledRegions.Count; regionId++)
+                    {
+                        if (mapInfo.EnabledRegions[regionId])
+                        {
+                            sql.ExecuteQuery("INSERT INTO mapinfo VALUES (1,@RegionId)", new KeyValuePair<string, object>[] {
+                                new KeyValuePair<string, object>( "@RegionId", regionId )
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    // Get region ids at worldmap from database
+                    results = sql.ExecuteQuery("SELECT Service, RegionID FROM mapinfo WHERE Service = 1 AND RegionID >= 0");
+
+                    if (results.Count == 0)
+                    {
+                        // Disable all of them
+                        for (int i = 0; i < mapInfo.EnabledRegions.Count; i++)
+                            mapInfo.EnabledRegions[i] = false;
+
+                        // Enable just the one found in database
+                        foreach (var result in results)
+                        {
+                            short regionId = short.Parse(result[0]);
+                            mapInfo.SetRegion(regionId, true);
+                        }
+
+                        // Save it
+                        File.Delete(filePath + ".bak");
+                        File.Move(filePath, filePath + ".bak");
+                        mapInfo.Save(filePath);
+                    }
+                }
             }
             catch (Exception ex)
             {

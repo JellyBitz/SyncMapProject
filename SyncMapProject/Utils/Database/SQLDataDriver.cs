@@ -17,13 +17,18 @@ namespace SyncMapProject
         #endregion
 
         #region Public Methods
-        public List<string[]> GetTableResult(string Query)
+        public List<string[]> ExecuteQuery(string Query, KeyValuePair<string,object>[] BindParams = null)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(Query, conn))
                 {
+                    // Bind params
+                    if(BindParams != null)
+                        for (int i = 0; i < BindParams.Length; i++)
+                            cmd.Parameters.AddWithValue(BindParams[i].Key, BindParams[i].Value);
+
                     using (var dataReader = cmd.ExecuteReader())
                     {
                         // Rows

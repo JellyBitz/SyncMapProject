@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada a un ensamblado.
 [assembly: AssemblyTitle("SyncMapProject")]
-[assembly: AssemblyDescription("Synchronize the database regions with mapinfo.mfo")]
+[assembly: AssemblyDescription("Synchronize database regions from mapinfo table with the specified mapinfo.mfo")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SyncMapProject")]
-[assembly: AssemblyCopyright("Copyright © Engels Quintero 2024")]
+[assembly: AssemblyCopyright("Copyright © Engels Quintero 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,5 +28,5 @@ using System.Runtime.InteropServices;
 //      Número de compilación
 //      Revisión
 //
-[assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]

@@ -13,16 +13,16 @@ namespace SyncMapProject.Silkroad
         public short Unk02 { get; set; }
         public short Unk03 { get; set; }
         public short Unk04 { get; set; }
-        public List<bool> RegionData { get; } = new List<bool>(); // width x height
+        public List<bool> EnabledRegions { get; } = new List<bool>(); // width x height
 
         #region Constructor
         public JMXVMFO() { }
         #endregion
 
         #region Public Methods
-        public bool IsRegionEnabled(byte X, byte Y) => RegionData[Y * 256 + X];
+        public bool IsRegionEnabled(byte X, byte Y) => EnabledRegions[Y * 256 + X];
         public bool IsRegionEnabled(short RegionId) => IsRegionEnabled((byte)(RegionId & 0xFF), (byte)(RegionId >> 8));
-        public void SetRegion(byte X, byte Y, bool Enabled) => RegionData[Y * 256 + X] = Enabled;
+        public void SetRegion(byte X, byte Y, bool Enabled) => EnabledRegions[Y * 256 + X] = Enabled;
         public void SetRegion(short RegionId, bool Enabled) => SetRegion((byte)(RegionId & 0xFF), (byte)(RegionId >> 8), Enabled);
 
         public bool Load(string filePath)
@@ -43,7 +43,7 @@ namespace SyncMapProject.Silkroad
                     Unk03 = br.ReadInt16();
                     Unk04 = br.ReadInt16();
 
-                    RegionData.Clear();
+                    EnabledRegions.Clear();
                     var regionLimit = (256 * 256) / 8; // 256x256 encoded into bytes
                     for (int r = 0; r < regionLimit; r++)
                     {
@@ -52,7 +52,7 @@ namespace SyncMapProject.Silkroad
                         for (int i = 0; i < 8; i++)
                         {
                             var isEnabled = ((regions >> (7 - i)) & 1) == 1;
-                            RegionData.Add(isEnabled);
+                            EnabledRegions.Add(isEnabled);
                         }
                     }
 
@@ -86,7 +86,7 @@ namespace SyncMapProject.Silkroad
                     for (int i = 0; i < 8; i++)
                     {
                         // Set each boolean
-                        if (RegionData[r * 8 + i])
+                        if (EnabledRegions[r * 8 + i])
                         {
                             regions |= (byte)(1 << (7 - i));
                         }
