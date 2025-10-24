@@ -3,7 +3,7 @@ Synchronize the database regions with mapinfo.mfo
 
 ### Usage
 1. Set up your database connection at `Settings.json`
-2. Drag & drop your `mapinfo.ifo` file into the executable
+2. Drag & drop your `mapinfo.mfo` file into the executable
 
 **Note** : The first time will create a table named `mapinfo` in your database used later on to add new regions to disable/enabled them.
 
